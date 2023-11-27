@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable" :beforeEditSubmit="beforeEditSubmit">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增用户 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增猪舍 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'omitPicture'">
@@ -12,7 +12,17 @@
           <TableAction :actions="[
             {
               icon: 'clarity:note-edit-line',
+              label: '分配员工',
+              onClick: handleAssignStaff.bind(null, record),
+            },
+            {
+              icon: 'clarity:note-edit-line',
               onClick: handleEdit.bind(null, record),
+            },
+            {
+              icon: 'clarity:note-edit-line',
+              label: '每日数据',
+              onClick: handleDataService.bind(null, record),
             },
             {
               icon: 'ant-design:delete-outlined',
@@ -28,6 +38,8 @@
       </template>
     </BasicTable>
     <PigstyModal @register="registerModal" @success="handleSuccess" />
+    <AssignStaffModal @register="registerAssignStaffModal" @success="handleSuccess" />
+    <DataServiceModal @register="registerDataServiceModal"></DataServiceModal>
   </div>
 </template>
 <script lang="ts">
@@ -36,31 +48,39 @@ import { defineComponent, ref } from 'vue';
 import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
 import Icon from '@/components/Icon/Icon.vue';
 import { searchPigstyApi, deletePigstyApi } from '/@/api/pigsty';
-import { NewsSearchItem } from '/@/api/pigsty/newsModel';
 
 import { useModal } from '/@/components/Modal';
 import { useMessage } from '/@/hooks/web/useMessage';
-import PigstyModal from './PigstyModal.vue';
+import PigstyModal from './pigstyModal.vue';
+import AssignStaffModal from './assignStaffModal.vue'
+import DataServiceModal from './dataServiceModal.vue'
 
 import { columns, getFormConfig } from './pigsty.data';
 
 export default defineComponent({
   name: 'pigsty-management',
-  components: { BasicTable, PigstyModal, TableAction, Icon, TableImg },
+  components: { BasicTable, PigstyModal, AssignStaffModal, DataServiceModal, TableAction, Icon, TableImg },
   setup() {
-    const searchData = ref<NewsSearchItem>({
+    const searchData = ref<any>({
       pageNum: 1,
       pageSize: 10,
       total: 0,
     });
     const [registerModal, { openModal }] = useModal();
+    const [registerAssignStaffModal, assignStaffModal] = useModal()
+    const [registerDataServiceModal, dataServiceModal] = useModal()
     const [registerTable, { reload }] = useTable({
       title: '账号管理',
       isTreeTable: true,
-      api: () => {
+      api: (params) => {
         return new Promise(async (resolve) => {
-          let res = await searchPigstyApi(searchData.value);
-          resolve(res);
+          let res = await searchPigstyApi(Object.assign(searchData.value, {
+            webpageinfo: `${params.page};${params.pageSize}`
+          }));
+          resolve({
+            items: res.data,
+            total: res.number
+          });
         });
       },
       columns,
@@ -83,7 +103,7 @@ export default defineComponent({
       showIndexColumn: false,
       canResize: false,
       actionColumn: {
-        width: 160,
+        width: 360,
         title: '操作',
         dataIndex: 'action',
       },
@@ -116,6 +136,18 @@ export default defineComponent({
 
     async function beforeEditSubmit({ record, index, key, value }) { }
 
+    function handleAssignStaff(record: Recordable) {
+      assignStaffModal.openModal(true, {
+        record,
+      })
+    }
+
+    function handleDataService(record: Recordable) {
+      dataServiceModal.openModal(true, {
+        record
+      })
+    }
+
     return {
       registerTable,
       registerModal,
@@ -124,6 +156,10 @@ export default defineComponent({
       handleDelete,
       handleSuccess,
       beforeEditSubmit,
+      handleAssignStaff,
+      registerAssignStaffModal,
+      handleDataService,
+      registerDataServiceModal
     };
   },
 });

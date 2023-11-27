@@ -9,10 +9,9 @@ const news: AppRouteModule = {
   component: LAYOUT,
   redirect: '/manager/index',
   meta: {
-    orderNo: 10,
+    orderNo: 3,
     icon: 'material-symbols:newsmode-rounded',
     title: t('routes.manager.routesTitle'),
-    hideChildrenInMenu: true,
   },
   children: [
     {
@@ -22,7 +21,15 @@ const news: AppRouteModule = {
       meta: {
         title: t('routes.manager.routesTitle'),
         icon: 'material-symbols:newsmode-rounded',
-        hideMenu: true,
+      },
+    },
+    {
+      path: 'staff-list',
+      name: 'staff-index',
+      component: () => import('/@/views/staff/index.vue'),
+      meta: {
+        title: t('routes.manager.staff'),
+        icon: 'material-symbols:newsmode-rounded',
       },
     },
   ],

@@ -2,20 +2,15 @@ import { h } from 'vue';
 import { Tinymce } from '/@/components/Tinymce/index';
 
 import { uploadApi } from '/@/api/sys/upload';
+import { formatToDateTime } from '/@/utils/dateUtil'
 import { BasicColumn, FormProps, FormSchema } from '/@/components/Table';
 
-import { searchEnterpriseApi } from '/@/api/enterprise'
-import { searchManagerApi } from '/@/api/manager'
-import { searchRegionApi } from '/@/api/region'
+import { getEnterpriseListApi } from '/@/api/enterprise'
+import { getManagerListApi } from '/@/api/manager'
+import { getRegionListApi } from '/@/api/region'
 
 
 export const columns: BasicColumn[] = [
-  {
-    title: '编号',
-    dataIndex: 'id',
-    width: 160,
-    align: 'left',
-  },
   {
     title: '名称',
     dataIndex: 'name',
@@ -23,22 +18,31 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
-    title: '手机',
+    title: '电话',
     dataIndex: 'phone',
     width: 160,
     align: 'left',
   },
   {
-    title: '所属企业',
+    title: '企业信息',
     dataIndex: 'enterprise',
     width: 160,
     align: 'left',
   },
   {
-    title: '邮箱',
-    dataIndex: 'email',
+    title: '管理的猪舍数量',
+    dataIndex: '',
     width: 160,
     align: 'left',
+  },
+  {
+    title: '更新时间',
+    dataIndex: 'lastTS',
+    width: 160,
+    align: 'left',
+    customRender: ({ record }) => {
+      return formatToDateTime(new Date(record.lastTS * 1000))
+    }
   },
 ];
 
@@ -48,6 +52,11 @@ export const addFormSchema: FormSchema[] = [
     label: '登录账号',
     component: 'Input',
     required: true,
+    componentProps: ({ formModel }) => {
+      return {
+        disabled: formModel.isUpdate
+      }
+    }
   },
   {
     field: 'name',
@@ -60,9 +69,14 @@ export const addFormSchema: FormSchema[] = [
     label: '手机号码',
     component: 'Input',
     required: true,
+    componentProps: ({ formModel }) => {
+      return {
+        disabled: formModel.isUpdate
+      }
+    }
   },
   {
-    field: 'managerid',
+    field: 'enterprise_id',
     label: '所属企业',
     component: 'ApiSelect',
     required: true,
@@ -70,7 +84,7 @@ export const addFormSchema: FormSchema[] = [
       return {
         api: () => {
           return new Promise(async (resolve) => {
-            let res = await searchEnterpriseApi({
+            let res = await getEnterpriseListApi({
 
             });
             resolve(res);
@@ -82,7 +96,7 @@ export const addFormSchema: FormSchema[] = [
     },
   },
   {
-    field: 'enterprise_id',
+    field: 'managerid',
     label: '所属管理员',
     component: 'ApiSelect',
     required: true,
@@ -90,7 +104,7 @@ export const addFormSchema: FormSchema[] = [
       return {
         api: () => {
           return new Promise(async (resolve) => {
-            let res = await searchManagerApi({
+            let res = await getManagerListApi({
 
             });
             resolve(res);
@@ -103,16 +117,14 @@ export const addFormSchema: FormSchema[] = [
   },
   {
     field: 'regionid',
-    label: '所属企业',
+    label: '所属区域',
     component: 'ApiSelect',
     required: true,
     componentProps: ({ schema, formModel, tableAction, formActionType }) => {
       return {
         api: () => {
           return new Promise(async (resolve) => {
-            let res: any = await searchRegionApi({
-
-            });
+            let res: any = await getRegionListApi();
             if (res.lev3) {
               resolve(res.lev3.map(item => {
                 return {
@@ -130,86 +142,16 @@ export const addFormSchema: FormSchema[] = [
       };
     },
   },
-];
-
-
-export const updateFormSchema: FormSchema[] = [
   {
-    field: 'id',
-    label: '登录账号',
-    component: 'Input',
-    required: true,
-  },
-  {
-    field: 'managerid',
-    label: '所属企业',
-    component: 'ApiSelect',
-    required: true,
-    componentProps: ({ schema, formModel, tableAction, formActionType }) => {
-      return {
-        api: () => {
-          return new Promise(async (resolve) => {
-            let res = await searchEnterpriseApi({
-
-            });
-            resolve(res);
-          });
-        },
-        labelField: 'name',
-        valueField: 'id',
-      };
-    },
-  },
-  {
-    field: 'enterprise_id',
-    label: '所属管理员',
-    component: 'ApiSelect',
-    required: true,
-    componentProps: ({ schema, formModel, tableAction, formActionType }) => {
-      return {
-        api: () => {
-          return new Promise(async (resolve) => {
-            let res = await searchManagerApi({
-
-            });
-            resolve(res);
-          });
-        },
-        labelField: 'name',
-        valueField: 'id',
-      };
-    },
-  },
-  {
-    field: 'regionid',
-    label: '所属企业',
-    component: 'ApiSelect',
-    required: true,
-    componentProps: ({ schema, formModel, tableAction, formActionType }) => {
-      return {
-        api: () => {
-          return new Promise(async (resolve) => {
-            let res: any = await searchRegionApi({
-
-            });
-            if (res.lev3) {
-              resolve(res.lev3.map(item => {
-                return {
-                  id: item.id,
-                  name: `${item.l1}${item.l2}${item.l3}`
-                }
-              }))
-            } else {
-              resolve([]);
-            }
-          });
-        },
-        labelField: 'name',
-        valueField: 'id',
-      };
-    },
+    field: 'isUpdate',
+    label: '',
+    component: 'Switch',
+    show: false
   },
 ];
+
+
+
 
 
 export function getFormConfig(): Partial<FormProps> {

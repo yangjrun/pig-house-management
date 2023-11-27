@@ -50,9 +50,9 @@ const transform: AxiosTransform = {
       // return '[HTTP] Request has no return value';
       throw new Error(t('sys.api.apiRequestFailed'));
     }
-    console.log('resData',resData)
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
     const { code, response, msg } = resData;
+    console.log('code', code)
 
     // 这里逻辑可以根据项目进行修改
     const hasSuccess = resData && Reflect.has(resData, 'code') && code === ResultEnum.SUCCESS;
@@ -278,11 +278,3 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
   );
 }
 export const defHttp = createAxios();
-
-// other api url
-// export const otherHttp = createAxios({
-//   requestOptions: {
-//     apiUrl: 'xxx',
-//     urlPrefix: 'xxx',
-//   },
-// });

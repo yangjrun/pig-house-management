@@ -52,6 +52,11 @@ export default defineComponent({
       try {
         const values = await validate();
         setModalProps({ confirmLoading: true });
+        values.association = {
+          managerid: values.managerid,
+          enterprise_id: values.enterprise_id,
+          regionid: values.regionid
+        }
         if (unref(isUpdate)) {
           values.id = unref(id);
           await modifyPigstyApi(values);

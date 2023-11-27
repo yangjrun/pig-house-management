@@ -1,13 +1,15 @@
-// import { defHttp } from '/@/utils/http/axios';
-import { defHttp } from '/@/utils/http/axios/otherRequest'
+import { defHttp } from '/@/utils/http/axios';
+import { defHttp as otherDefHttp } from '/@/utils/http/axios/otherRequest'
 import { BasicFetchResult } from '../model/baseModel';
 
 enum Api {
-  searchUrl = '/pigsty/getList',
+  searchUrl = '/pigsty/query',
   addUrl = '/pigsty/add',
   modifyUrl = '/pigsty/modify',
   deleteUrl = '/pigsty/delete',
-
+  listUrl = '/pigsty/getList',
+  assignStaffUrl = '/pigsty/assignStaff',
+  getdaypigstyinfoUrl = '/dataservice/getdaypigstyinfo'
 }
 
 /**
@@ -54,7 +56,39 @@ export function deletePigstyApi(params: any) {
   });
 }
 
+/**
+ * 获取全部猪舍列表
+ * @param params 
+ */
+export function getPigstyListApi(params: any) {
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.listUrl,
+    params,
+  });
+}
 
+/**
+ * 给猪舍分配员工
+ * @param params 
+ */
+export function assignStaffApi(params: any) {
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.assignStaffUrl,
+    params,
+  });
+}
+
+/**
+ * 获取每天的猪舍数据
+ * @param params 
+ * @returns 
+ */
+export function getDayPigstyInfoApi(params: any) {
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.getdaypigstyinfoUrl,
+    params,
+  });
+}
 
 
 

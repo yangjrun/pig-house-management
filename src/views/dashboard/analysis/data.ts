@@ -1,43 +1,43 @@
 export interface GrowCardItem {
-  icon: string;
   title: string;
-  value: number;
-  total: number;
-  color: string;
-  action: string;
+  label1: string,
+  label2: string,
+  value1: number,
+  value2: number,
+  unit: string
 }
 
 export const growCardList: GrowCardItem[] = [
   {
-    title: '访问数',
-    icon: 'visit-count|svg',
-    value: 2000,
-    total: 120000,
-    color: 'green',
-    action: '月',
+    title: '猪舍概览',
+    label1: '注册',
+    label2: '在线',
+    value1: 20,
+    value2: 19,
+    unit: '栏'
   },
   {
-    title: '成交额',
-    icon: 'total-sales|svg',
-    value: 20000,
-    total: 500000,
-    color: 'blue',
-    action: '月',
+    title: '用水量概览',
+    label1: '昨日用水量',
+    label2: '今日用水量',
+    value1: 20,
+    value2: 19,
+    unit: '吨'
   },
   {
-    title: '下载数',
-    icon: 'download-count|svg',
-    value: 8000,
-    total: 120000,
-    color: 'orange',
-    action: '周',
+    title: '在栏数概览',
+    label1: '昨日在栏数',
+    label2: '今日在栏数',
+    value1: 20,
+    value2: 19,
+    unit: '头'
   },
   {
-    title: '成交数',
-    icon: 'transaction|svg',
-    value: 5000,
-    total: 50000,
-    color: 'purple',
-    action: '年',
+    title: '任务概览',
+    label1: '当日任务',
+    label2: '当日代办',
+    value1: 20,
+    value2: 19,
+    unit: '吨'
   },
 ];

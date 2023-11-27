@@ -1,13 +1,13 @@
-// import { defHttp } from '/@/utils/http/axios';
-import { defHttp } from '/@/utils/http/axios/otherRequest'
+import { defHttp } from '/@/utils/http/axios';
+import { defHttp as otherDefHttp } from '/@/utils/http/axios/otherRequest'
 import { BasicFetchResult } from '../model/baseModel';
 
 enum Api {
-  searchUrl = '/region/getList',
+  searchUrl = '/region/query',
   addUrl = '/region/add',
   modifyUrl = '/region/modify',
   deleteUrl = '/region/delete',
-
+  listUrl = '/region/getList'
 }
 
 /**
@@ -54,7 +54,13 @@ export function deleteRegionApi(params: any) {
   });
 }
 
-
-
-
-
+/**
+ * 获取全部区域列表
+ * @param params 
+ * @returns 
+ */
+export function getRegionListApi() {
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.listUrl,
+  });
+}

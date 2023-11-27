@@ -1,12 +1,13 @@
-// import { defHttp } from '/@/utils/http/axios';
-import { defHttp } from '/@/utils/http/axios/otherRequest'
+import { defHttp } from '/@/utils/http/axios';
+import { defHttp as otherDefHttp } from '/@/utils/http/axios/otherRequest'
 import { BasicFetchResult } from '../model/baseModel';
 
 enum Api {
-  searchUrl = '/manager/getList',
+  searchUrl = '/manager/query',
   addUrl = '/manager/add',
   modifyUrl = '/manager/modify',
   deleteUrl = '/manager/delete',
+  listUrl = '/manager/getList'
 
 }
 
@@ -36,7 +37,7 @@ export function addManagerApi(params: any) {
 /**
  * 修改管理员账户
  */
-export function modifyManagerApi(params: any){
+export function modifyManagerApi(params: any) {
   return defHttp.post<BasicFetchResult<any>>({
     url: Api.modifyUrl,
     params,
@@ -47,9 +48,19 @@ export function modifyManagerApi(params: any){
  * 删除管理员
  * @param params 
  */
-export function deleteManagerApi(params: any){
+export function deleteManagerApi(params: any) {
   return defHttp.post<BasicFetchResult<any>>({
     url: Api.deleteUrl,
+    params,
+  });
+}
+
+/**
+ * 获取全部管理员列表
+ */
+export function getManagerListApi(params: any) {
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.listUrl,
     params,
   });
 }

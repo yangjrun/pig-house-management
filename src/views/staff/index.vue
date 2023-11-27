@@ -27,8 +27,7 @@
         </template>
       </template>
     </BasicTable>
-    <StaffAddModal @register="registerAddModal" @success="handleSuccess" />
-    <StaffUpdateModal @register="registerUpdateModal" @success="handleSuccess" />
+    <StaffModal @register="registerModal" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
@@ -37,34 +36,36 @@ import { defineComponent, ref } from 'vue';
 import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
 import Icon from '@/components/Icon/Icon.vue';
 import { searchStaffApi, deleteStaffApi } from '/@/api/staff';
-import { NewsSearchItem } from '/@/api/staff/newsModel';
 
 import { useModal } from '/@/components/Modal';
 import { useMessage } from '/@/hooks/web/useMessage';
-import StaffAddModal from './StaffAddModal.vue';
-import StaffUpdateModal from './StaffUpdateModal.vue';
+import StaffModal from './StaffModal.vue';
 
 
 import { columns, getFormConfig } from './staff.data';
 
 export default defineComponent({
   name: 'staff-management',
-  components: { BasicTable, StaffAddModal, StaffUpdateModal, TableAction, Icon, TableImg },
+  components: { BasicTable, StaffModal, TableAction, Icon, TableImg },
   setup() {
-    const searchData = ref<NewsSearchItem>({
+    const searchData = ref<any>({
       pageNum: 1,
       pageSize: 10,
       total: 0,
     });
-    const [registerAddModal, addModal] = useModal();
-    const [registerUpdateModal, updateModal] = useModal();
+    const [registerModal, modal] = useModal();
     const [registerTable, { reload }] = useTable({
       title: '账号管理',
       isTreeTable: true,
-      api: () => {
+      api: (params) => {
         return new Promise(async (resolve) => {
-          let res = await searchStaffApi(searchData.value);
-          resolve(res);
+          let res = await searchStaffApi(Object.assign(searchData.value, {
+            webpageinfo: `${params.page};${params.pageSize}`
+          }));
+          resolve({
+            items: res.data,
+            total: res.number
+          });
         });
       },
       columns,
@@ -96,13 +97,13 @@ export default defineComponent({
     const { createMessage } = useMessage();
 
     function handleCreate() {
-      addModal.openModal(true, {
+      modal.openModal(true, {
         isUpdate: false,
       });
     }
 
     function handleEdit(record: Recordable) {
-      updateModal.openModal(true, {
+      modal.openModal(true, {
         record,
         isUpdate: true,
       });
@@ -122,8 +123,7 @@ export default defineComponent({
 
     return {
       registerTable,
-      registerAddModal,
-      registerUpdateModal,
+      registerModal,
       handleCreate,
       handleEdit,
       handleDelete,

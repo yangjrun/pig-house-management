@@ -9,10 +9,9 @@ const news: AppRouteModule = {
   component: LAYOUT,
   redirect: '/enterprise/index',
   meta: {
-    orderNo: 10,
+    orderNo: 2,
     icon: 'material-symbols:newsmode-rounded',
     title: t('routes.enterprise.routesTitle'),
-    hideChildrenInMenu: true,
   },
   children: [
     {
@@ -20,9 +19,17 @@ const news: AppRouteModule = {
       name: 'enterprise-index',
       component: () => import('/@/views/enterprise/index.vue'),
       meta: {
-        title: t('routes.enterprise.routesTitle'),
+        title: t('routes.enterprise.enterpriseList'),
         icon: 'material-symbols:newsmode-rounded',
-        hideMenu: true,
+      },
+    },
+    {
+      path: 'region-list',
+      name: 'region-index',
+      component: () => import('/@/views/region/index.vue'),
+      meta: {
+        title: t('routes.enterprise.region'),
+        icon: 'material-symbols:newsmode-rounded',
       },
     },
   ],

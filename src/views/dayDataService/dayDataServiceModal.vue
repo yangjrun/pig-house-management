@@ -7,13 +7,13 @@
 import { defineComponent, ref, computed, unref } from 'vue';
 import { BasicModal, useModalInner } from '/@/components/Modal';
 import { BasicForm, useForm, ApiSelect } from '/@/components/Form/index';
-import { updateFormSchema } from './staff.data';
+import { formSchema } from './dayDataService.data';
 import { useMessage } from '/@/hooks/web/useMessage';
 
-import { addStaffApi, modifyStaffApi } from '/@/api/staff';
+import { modifypigstyinfoUrlApi } from '/@/api/dataservice';
 
 export default defineComponent({
-  name: 'staff-update-modal',
+  name: 'pigsty-modal',
   components: { BasicModal, BasicForm, ApiSelect },
   emits: ['success', 'register'],
   setup(_, { emit }) {
@@ -24,7 +24,7 @@ export default defineComponent({
     const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
       labelWidth: 100,
       baseColProps: { span: 24 },
-      schemas: updateFormSchema,
+      schemas: formSchema,
       showActionButtonGroup: false,
     });
 
@@ -32,45 +32,29 @@ export default defineComponent({
       resetFields();
       setModalProps({ confirmLoading: false });
       isUpdate.value = !!data?.isUpdate;
-
       if (unref(isUpdate)) {
+
         setFieldsValue(
           Object.assign(
             {
               ...data.record,
             },
             {
-              isUpdate: isUpdate.value
-            }
-          ),
+              isUpdate
+            }),
         );
         id.value = data.record.id;
       }
     });
 
-    const getTitle = computed(() => (unref(isUpdate) ? '编辑员工' : '新增员工'));
+    const getTitle = '编辑猪舍日数据';
 
     async function handleSubmit() {
       try {
         const values = await validate();
         setModalProps({ confirmLoading: true });
-        if (unref(isUpdate)) {
-          values.id = unref(id);
-          values.association = {
-            managerid: values.managerid,
-            enterprise_id: values.enterprise_id,
-            regionid: values.regionid
-          }
-          await modifyStaffApi(values);
-        } else {
-          values.association = {
-            managerid: values.managerid,
-            enterprise_id: values.enterprise_id,
-            regionid: values.regionid
-          }
-          await addStaffApi(values);
-        }
-
+        values.id = unref(id);
+        await modifypigstyinfoUrlApi(values);
         createMessage.success(!unref(isUpdate) ? '新增成功' : '修改成功');
         closeModal();
         emit('success');
@@ -86,5 +70,5 @@ export default defineComponent({
       handleSubmit,
     };
   },
-});
+})
 </script>

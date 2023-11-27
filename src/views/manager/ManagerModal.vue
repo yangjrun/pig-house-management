@@ -39,7 +39,9 @@ export default defineComponent({
             {
               ...data.record,
             },
-            {}
+            {
+              isUpdate
+            }
           ),
         );
         id.value = data.record.id;

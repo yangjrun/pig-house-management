@@ -57,10 +57,15 @@ export default defineComponent({
     const [registerTable, { reload }] = useTable({
       title: '账号管理',
       isTreeTable: true,
-      api: () => {
+      api: (params) => {
         return new Promise(async (resolve) => {
-          let res = await searchManagerApi(searchData.value);
-          resolve(res);
+          let res = await searchManagerApi(Object.assign(searchData.value, {
+            webpageinfo: `${params.page};${params.pageSize}`
+          }));
+          resolve({
+            items: res.data,
+            total: res.number
+          });
         });
       },
       columns,

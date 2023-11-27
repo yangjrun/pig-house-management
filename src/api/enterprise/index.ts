@@ -1,13 +1,13 @@
-// import { defHttp } from '/@/utils/http/axios';
-import { defHttp } from '/@/utils/http/axios/otherRequest'
+import { defHttp } from '/@/utils/http/axios';
+import { defHttp as otherDefHttp } from '/@/utils/http/axios/otherRequest'
 import { BasicFetchResult } from '../model/baseModel';
 
 enum Api {
-  searchUrl = '/enterprise/getList',
+  searchUrl = '/enterprise/query',
   addUrl = '/enterprise/add',
   modifyUrl = '/enterprise/modify',
   deleteUrl = '/enterprise/delete',
-
+  listUrl = '/enterprise/getList'
 }
 
 /**
@@ -54,6 +54,17 @@ export function deleteEnterpriseApi(params: any) {
   });
 }
 
+/**
+ * 获取全部的企业列表
+ * @param params 
+ * @returns 
+ */
+export function getEnterpriseListApi(params: any){
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.listUrl,
+    params,
+  });
+}
 
 
 

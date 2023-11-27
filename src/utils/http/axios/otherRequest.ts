@@ -50,7 +50,6 @@ const transform: AxiosTransform = {
       // return '[HTTP] Request has no return value';
       throw new Error(t('sys.api.apiRequestFailed'));
     }
-    console.log('resData',resData)
     return resData
   },
 

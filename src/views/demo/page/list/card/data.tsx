@@ -2,7 +2,7 @@ export const cardList = (() => {
   const result: any[] = [];
   for (let i = 0; i < 12; i++) {
     result.push({
-      title: '云集互联',
+      title: '猪舍信息管理系统',
       icon: 'logos:vue',
       color: '#1890ff',
       active: '100',

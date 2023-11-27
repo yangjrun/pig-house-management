@@ -9,7 +9,7 @@ const dashboard: AppRouteModule = {
   component: LAYOUT,
   redirect: '/dashboard/analysis',
   meta: {
-    orderNo: 10,
+    orderNo: 1,
     icon: 'ion:grid-outline',
     title: t('routes.dashboard.dashboard'),
   },
@@ -31,14 +31,14 @@ const dashboard: AppRouteModule = {
         title: t('routes.dashboard.workbench'),
       },
     },
-    {
-      path: 'modal',
-      name: 'ModalDemo',
-      component: () => import('/@/views/demo/comp/modal/index.vue'),
-      meta: {
-        title: t('routes.demo.comp.modal'),
-      },
-    },
+    // {
+    //   path: 'modal',
+    //   name: 'ModalDemo',
+    //   component: () => import('/@/views/demo/comp/modal/index.vue'),
+    //   meta: {
+    //     title: t('routes.demo.comp.modal'),
+    //   },
+    // },
   ],
 };
 

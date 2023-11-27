@@ -16,7 +16,7 @@
 <script lang="ts" setup>
   import { ref } from 'vue';
   import { Card } from 'ant-design-vue';
-  import VisitAnalysis from './VisitAnalysis.vue';
+  import VisitAnalysis from './VisitAnalysis-1.vue';
   import VisitAnalysisBar from './VisitAnalysisBar.vue';
 
   const activeKey = ref('tab1');

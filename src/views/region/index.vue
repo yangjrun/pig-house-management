@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable" :beforeEditSubmit="beforeEditSubmit">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增用户 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增区域 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'omitPicture'">
@@ -10,10 +10,6 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <TableAction :actions="[
-            {
-              icon: 'clarity:note-edit-line',
-              onClick: handleEdit.bind(null, record),
-            },
             {
               icon: 'ant-design:delete-outlined',
               color: 'error',
@@ -36,19 +32,18 @@ import { defineComponent, ref } from 'vue';
 import { BasicTable, useTable, TableAction, TableImg } from '/@/components/Table';
 import Icon from '@/components/Icon/Icon.vue';
 import { searchRegionApi, deleteRegionApi } from '/@/api/region';
-import { NewsSearchItem } from '/@/api/region/newsModel';
 
 import { useModal } from '/@/components/Modal';
 import { useMessage } from '/@/hooks/web/useMessage';
 import RegionModal from './RegionModal.vue';
 
-import { columns, getFormConfig } from './region.data';
+import { columns, getFormConfig, searchFormSchema } from './region.data';
 
 export default defineComponent({
   name: 'region-management',
   components: { BasicTable, RegionModal, TableAction, Icon, TableImg },
   setup() {
-    const searchData = ref<NewsSearchItem>({
+    const searchData = ref<any>({
       pageNum: 1,
       pageSize: 10,
       total: 0,
@@ -57,10 +52,15 @@ export default defineComponent({
     const [registerTable, { reload }] = useTable({
       title: '账号管理',
       isTreeTable: true,
-      api: () => {
+      api: (params) => {
         return new Promise(async (resolve) => {
-          let res = await searchRegionApi(searchData.value);
-          resolve(res);
+          let res = await searchRegionApi(Object.assign(searchData.value, {
+            webpageinfo: `${params.page};${params.pageSize}`
+          }));
+          resolve({
+            items: res.data,
+            total: res.number
+          })
         });
       },
       columns,
@@ -77,7 +77,11 @@ export default defineComponent({
         }
         return info;
       },
-      formConfig: getFormConfig(),
+      formConfig: {
+        abelWidth: 120,
+        schemas: searchFormSchema,
+        autoSubmitOnEnter: true,
+      },
       showTableSetting: true,
       bordered: true,
       showIndexColumn: false,

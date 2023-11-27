@@ -5,7 +5,7 @@ export const searchList = (() => {
   for (let i = 0; i < 6; i++) {
     result.push({
       id: i,
-      title: '云集互联',
+      title: '猪舍信息管理系统',
       description: ['Vben', '设计语言', 'Typescript'],
       content: '基于Vue Next, TypeScript, Ant Design实现的一套完整的企业级后台管理系统。',
       time: '2020-11-14 11:20',

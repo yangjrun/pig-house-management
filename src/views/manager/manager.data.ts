@@ -4,30 +4,30 @@ import { Tinymce } from '/@/components/Tinymce/index';
 import { uploadApi } from '/@/api/sys/upload';
 import { BasicColumn, FormProps, FormSchema } from '/@/components/Table';
 
-import { searchEnterpriseApi } from '/@/api/enterprise'
+import { getEnterpriseListApi } from '/@/api/enterprise'
 
 export const columns: BasicColumn[] = [
   {
-    title: '编号',
+    title: '账号id',
     dataIndex: 'id',
     width: 160,
     align: 'left',
   },
   {
-    title: '名称',
+    title: '姓名',
     dataIndex: 'name',
     width: 160,
     align: 'left',
   },
   {
-    title: '手机',
-    dataIndex: 'phone',
+    title: '公司信息',
+    dataIndex: 'enterprise',
     width: 160,
     align: 'left',
   },
   {
-    title: '所属企业',
-    dataIndex: 'enterprise',
+    title: '联系方式',
+    dataIndex: 'id',
     width: 160,
     align: 'left',
   },
@@ -42,34 +42,48 @@ export const columns: BasicColumn[] = [
 export const formSchema: FormSchema[] = [
   {
     field: 'id',
-    label: '登录账号',
+    label: '账号id',
     component: 'Input',
     required: true,
-  },
-  {
-    field: 'name',
-    label: '用户名称',
-    component: 'Input',
-    required: true,
+    componentProps: ({ formModel }) => {
+      return {
+        disabled: formModel.isUpdate
+      }
+    }
   },
   {
     field: 'passwd',
     label: '密码',
     component: 'Input',
     required: true,
+    componentProps: ({ formModel }) => {
+      return {
+        disabled: formModel.isUpdate
+      }
+    },
+    ifShow: ({ values }) => {
+      return !values.isUpdate
+    },
+  },
+  {
+    field: 'name',
+    label: '姓名',
+    component: 'Input',
+    required: true,
   },
   {
     field: 'enterprise_id',
-    label: '所属企业',
+    label: '公司信息',
     component: 'ApiSelect',
     required: true,
     componentProps: ({ schema, formModel, tableAction, formActionType }) => {
       return {
         api: () => {
           return new Promise(async (resolve) => {
-            let res = await searchEnterpriseApi({
+            let res = await getEnterpriseListApi({
 
             });
+            console.log('res', res)
             resolve(res);
           });
         },
@@ -78,12 +92,31 @@ export const formSchema: FormSchema[] = [
       };
     },
   },
+  {
+    field: 'email',
+    label: '邮箱',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'isUpdate',
+    label: '',
+    component: 'Switch',
+    show: false
+  },
 ];
 
 export function getFormConfig(): Partial<FormProps> {
   return {
     labelWidth: 100,
     autoSubmitOnEnter: true,
-    schemas: [],
+    schemas: [
+      {
+        field: 'condition',
+        label: '账号查询',
+        component: 'Input',
+        colProps: { span: 8 },
+      },
+    ],
   };
 }

@@ -35,7 +35,9 @@ export default defineComponent({
 
       if (unref(isUpdate)) {
         setFieldsValue(
-          data.record,
+          Object.assign(data.record, {
+            isUpdate
+          })
         );
         id.value = data.record.id;
       }
@@ -47,17 +49,17 @@ export default defineComponent({
       try {
         const values = await validate();
         setModalProps({ confirmLoading: true });
+        values['association'] =
+        {
+          managerid: values.managerid,
+          regionid: values.regionid
+        }
         if (unref(isUpdate)) {
           values.id = unref(id);
-          values.association = {
-            managerid: '15800001235',
-            regionid: '5bm/5Lic55yBX+W5v+W3nuW4gl/otornp4DljLo='
-          }
           await modifyEnterpriseApi(values);
         } else {
           await addEnterpriseApi(values);
         }
-
         createMessage.success(!unref(isUpdate) ? '新增成功' : '修改成功');
         closeModal();
         emit('success');
