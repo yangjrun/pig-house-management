@@ -9,7 +9,9 @@ enum Api {
   deleteUrl = '/pigsty/delete',
   listUrl = '/pigsty/getList',
   assignStaffUrl = '/pigsty/assignStaff',
-  getdaypigstyinfoUrl = '/dataservice/getdaypigstyinfo'
+  getdaypigstyinfoUrl = '/dataservice/getdaypigstyinfo',
+  findByNamesUrl = '/pigsty/findbynames'
+  
 }
 
 /**
@@ -86,6 +88,18 @@ export function assignStaffApi(params: any) {
 export function getDayPigstyInfoApi(params: any) {
   return otherDefHttp.post<BasicFetchResult<any>>({
     url: Api.getdaypigstyinfoUrl,
+    params,
+  });
+}
+
+/**
+ * 猪舍名字索引关联
+ * @param params 
+ * @returns 
+ */
+export function findPigstyByNamesApi(params: any){
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.findByNamesUrl,
     params,
   });
 }

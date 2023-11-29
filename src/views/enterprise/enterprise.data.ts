@@ -10,7 +10,7 @@ import { getRegionListApi } from '/@/api/region'
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'condition',
-    label: '企业名称',
+    label: '猪场名称',
     component: 'Input',
     colProps: { span: 8 },
   },
@@ -25,7 +25,7 @@ export const columns: BasicColumn[] = [
     ifShow: false,
   },
   {
-    title: '企业名称',
+    title: '猪场名称',
     dataIndex: 'name',
     width: 160,
     align: 'left',
@@ -71,7 +71,7 @@ export const columns: BasicColumn[] = [
 export const formSchema: FormSchema[] = [
   {
     field: 'name',
-    label: '企业名称',
+    label: '猪场名称',
     component: 'Input',
     required: true,
     componentProps: ({ formModel }) => {

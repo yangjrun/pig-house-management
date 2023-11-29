@@ -2,7 +2,7 @@
   <div>
     <BasicTable @register="registerTable" :beforeEditSubmit="beforeEditSubmit">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增企业 </a-button>
+        <a-button type="primary" @click="handleCreate"> 新增猪场 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'omitPicture'">

@@ -1,4 +1,4 @@
-import { h } from 'vue';
+import { h, ref } from 'vue';
 import { Tinymce } from '/@/components/Tinymce/index';
 
 import { uploadApi } from '/@/api/sys/upload';
@@ -6,12 +6,15 @@ import { BasicColumn, FormProps, FormSchema } from '/@/components/Table';
 import { formatToDateTime } from '/@/utils/dateUtil'
 import { getManagerListApi } from '/@/api/manager'
 import { getRegionListApi } from '/@/api/region'
-import { getPigstyListApi } from '/@/api/pigsty'
+import { getPigstyListApi, findPigstyByNamesApi } from '/@/api/pigsty'
+
+import { useDebounceFn } from '@vueuse/core';
+
 
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'condition',
-    label: '企业名称',
+    label: '猪场名称',
     component: 'Input',
     colProps: { span: 8 },
   },
@@ -45,19 +48,19 @@ export const columns: BasicColumn[] = [
   {
     title: '平均猪重',
     dataIndex: 'pigAverageWeight',
-    width: 160,
+    width: 80,
     align: 'left',
   },
   {
     title: '在栏数',
     dataIndex: 'pigHeadCount',
-    width: 160,
+    width: 80,
     align: 'left',
   },
   {
     title: '周龄',
     dataIndex: 'curPigWeekAge',
-    width: 160,
+    width: 80,
     align: 'left',
   },
   {
@@ -69,7 +72,7 @@ export const columns: BasicColumn[] = [
   {
     title: '星期',
     dataIndex: 'wday',
-    width: 160,
+    width: 80,
     align: 'left',
     customRender: ({ record, value, text }) => {
       if (value) {
@@ -82,63 +85,47 @@ export const columns: BasicColumn[] = [
   {
     title: '每日采食量',
     dataIndex: 'dayFeedWeightUsage',
-    width: 160,
+    width: 80,
     align: 'left',
   },
   {
     title: '每日用水量',
     dataIndex: 'dayWaterWeightUsage',
-    width: 160,
+    width: 80,
     align: 'left',
   },
 ];
 
 export const formSchema: FormSchema[] = [
   {
-    field: 'name',
-    label: '企业名称',
+    field: 'totalWeekFeedUsage',
+    label: '周采食量',
     component: 'Input',
     required: true,
-    componentProps: ({ formModel }) => {
-      return {
-        disabled: formModel.isUpdate
-      }
-    }
   },
   {
-    field: 'regionid',
-    label: '相关区域',
-    component: 'ApiSelect',
+    field: 'totalWeekWaterUsage',
+    label: '周用水量',
+    component: 'Input',
     required: true,
-    componentProps: {
-      api: () => {
-        return new Promise((resolve) => {
-          getRegionListApi().then(resp => {
-            resolve(resp['lev3'].map(item => {
-              return {
-                name: `${item.l1}${item.l2}${item.l3}`,
-                id: item.id
-              }
-            }))
-          })
-        })
-      },
-      resultField: 'items',
-      labelField: 'name',
-      valueField: 'id',
-    }
   },
   {
-    field: 'managerid',
-    label: '管理员信息',
-    component: 'ApiSelect',
+    field: 'pigHeadCount',
+    label: '在栏数',
+    component: 'Input',
     required: true,
-    componentProps: {
-      api: getManagerListApi,
-      resultField: 'items',
-      labelField: 'name',
-      valueField: 'id',
-    }
+  },
+  {
+    field: 'pigAverageWeight',
+    label: '平均猪重',
+    component: 'Input',
+    required: true,
+  },
+  {
+    field: 'curPigWeekAge',
+    label: '周龄',
+    component: 'Input',
+    required: true,
   },
   {
     field: 'isUpdate',
@@ -146,8 +133,15 @@ export const formSchema: FormSchema[] = [
     component: 'Switch',
     show: false
   },
+  {
+    field: 'weektime',
+    label: '',
+    component: 'Switch',
+    show: false
+  },
 ];
 
+const options: any = ref([])
 
 export function getFormConfig(): Partial<FormProps> {
   return {
@@ -155,21 +149,38 @@ export function getFormConfig(): Partial<FormProps> {
     autoSubmitOnEnter: true,
     schemas: [
       {
-        field: `ids`,
+        field: `id`,
         label: `选择猪舍`,
-        component: 'ApiSelect',
+        component: 'Select',
         componentProps: ({ schema, formModel, tableAction, formActionType }) => {
           return {
             api: () => {
               return new Promise(async (resolve) => {
-                let res = await getPigstyListApi({
+                let res = await findPigstyByNamesApi({
                 });
                 resolve(res);
               });
             },
-            labelField: 'name',
-            valueField: 'id',
-            mode: 'tags'
+            options: options.value,
+            showSearch: true,
+            filterOption: false,
+            params: {
+              names: ''
+            },
+            onSearch: (value: string) => {
+              return new Promise(async (resolve) => {
+                let res: any = await findPigstyByNamesApi({
+                  names: value
+                });
+                const list = res.map(item => {
+                  return {
+                    label: item.name,
+                    value: item.id
+                  }
+                })
+                options.value = list
+              });
+            }
           };
         },
         colProps: {
@@ -178,11 +189,19 @@ export function getFormConfig(): Partial<FormProps> {
         },
       },
       {
-        field: 'weektime',
+        field: 'weektimeStr',
         component: 'WeekPicker',
         label: '设置起始时间',
-        componentProps: {
-          format: 'YYYY-wo'
+        componentProps: ({ formModel }) => {
+          return {
+            format: 'YYYY-wo',
+            showNow: true,
+            onChange: (value, dateString) => {
+              console.log('onChange', value)
+              console.log('onChange', dateString)
+              formModel.weektime = dateString.replace('周', '')
+            }
+          }
         },
         colProps: {
           span: 12,

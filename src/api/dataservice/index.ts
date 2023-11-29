@@ -5,7 +5,8 @@ enum Api {
   getdaypigstyinfoUrl = '/dataservice/getdaypigstyinfo',
   getweekpigstyinfoUrl = '/dataservice/getweekpigstyinfo',
   modifypigstyinfoUrl = '/dataservice/modifypigstyinfo',
-  gethourpigstyinfoUrl = '/dataservice/gethourpigstyinfo'
+  gethourpigstyinfoUrl = '/dataservice/gethourpigstyinfo',
+  modifyweekpigstyinfoUrl = '/dataservice/modifyweekpigstyinfo'
 }
 
 
@@ -53,6 +54,18 @@ export function modifypigstyinfoUrlApi(params: any) {
 export function getHourPigstyInfoApi(params: any) {
   return otherDefHttp.post<BasicFetchResult<any>>({
     url: Api.gethourpigstyinfoUrl,
+    params,
+  });
+}
+
+/**
+ * 修改周数据
+ * @param params 
+ * @returns 
+ */
+export function modifyweekpigstyinfoApi(params: any) {
+  return otherDefHttp.post<BasicFetchResult<any>>({
+    url: Api.modifyweekpigstyinfoUrl,
     params,
   });
 }

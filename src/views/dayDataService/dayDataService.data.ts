@@ -11,7 +11,7 @@ import { getPigstyListApi } from '/@/api/pigsty'
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'condition',
-    label: '企业名称',
+    label: '猪场名称',
     component: 'Input',
     colProps: { span: 8 },
   },

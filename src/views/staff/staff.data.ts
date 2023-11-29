@@ -24,7 +24,7 @@ export const columns: BasicColumn[] = [
     align: 'left',
   },
   {
-    title: '企业信息',
+    title: '猪场信息',
     dataIndex: 'enterprise',
     width: 160,
     align: 'left',
@@ -77,7 +77,7 @@ export const addFormSchema: FormSchema[] = [
   },
   {
     field: 'enterprise_id',
-    label: '所属企业',
+    label: '所属猪场',
     component: 'ApiSelect',
     required: true,
     componentProps: ({ schema, formModel, tableAction, formActionType }) => {

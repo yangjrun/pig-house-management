@@ -1,5 +1,5 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="registerModal" width="500px" :title="getTitle" @ok="handleSubmit">
+  <BasicModal v-bind="$attrs" @register="registerModal" width="1200px" :title="getTitle" @ok="handleSubmit">
     <BasicForm @register="registerForm"> </BasicForm>
   </BasicModal>
 </template>
@@ -7,13 +7,13 @@
 import { defineComponent, ref, computed, unref } from 'vue';
 import { BasicModal, useModalInner } from '/@/components/Modal';
 import { BasicForm, useForm, ApiSelect } from '/@/components/Form/index';
-import { formSchema } from './enterprise.data';
+import { formSchema } from './weekDataService.data';
 import { useMessage } from '/@/hooks/web/useMessage';
 
-import { addEnterpriseApi, modifyEnterpriseApi } from '/@/api/enterprise';
+import { modifyweekpigstyinfoApi } from '/@/api/dataservice';
 
 export default defineComponent({
-  name: 'enterprise-modal',
+  name: 'pigsty-modal',
   components: { BasicModal, BasicForm, ApiSelect },
   emits: ['success', 'register'],
   setup(_, { emit }) {
@@ -31,35 +31,30 @@ export default defineComponent({
     const [registerModal, { setModalProps, closeModal }] = useModalInner(async (data) => {
       resetFields();
       setModalProps({ confirmLoading: false });
-      isUpdate.value = data?.isUpdate;
-
+      isUpdate.value = !!data?.isUpdate;
       if (unref(isUpdate)) {
+        console.log('data.record', data.record)
         setFieldsValue(
-          Object.assign(data.record, {
-            isUpdate
-          })
+          Object.assign(
+            {
+              ...data.record,
+            },
+            {
+              isUpdate
+            }),
         );
         id.value = data.record.id;
       }
     });
 
-    const getTitle = computed(() => (unref(isUpdate) ? '编辑猪场' : '新增猪场'));
+    const getTitle = '编辑猪舍日数据';
 
     async function handleSubmit() {
       try {
         const values = await validate();
         setModalProps({ confirmLoading: true });
-        values['association'] =
-        {
-          managerid: values.managerid,
-          regionid: values.regionid
-        }
-        if (unref(isUpdate)) {
-          values.id = unref(id);
-          await modifyEnterpriseApi(values);
-        } else {
-          await addEnterpriseApi(values);
-        }
+        values.id = unref(id);
+        await modifyweekpigstyinfoApi(values);
         createMessage.success(!unref(isUpdate) ? '新增成功' : '修改成功');
         closeModal();
         emit('success');
@@ -75,5 +70,5 @@ export default defineComponent({
       handleSubmit,
     };
   },
-});
+})
 </script>
